@@ -1,0 +1,49 @@
+import random
+
+class Environment:
+    def __init__(self):
+        # Initialize rooms with random dirt status
+        self.rooms = {
+            'A': random.choice(['Clean', 'Dirty']),
+            'B': random.choice(['Clean', 'Dirty'])
+        }
+        self.vacuum_location = random.choice(['A', 'B'])
+
+    def status(self):
+        return self.rooms[self.vacuum_location]
+
+    def clean(self):
+        self.rooms[self.vacuum_location] = 'Clean'
+
+    def move(self):
+        self.vacuum_location = 'B' if self.vacuum_location == 'A' else 'A'
+
+    def is_all_clean(self):
+        return all(state == 'Clean' for state in self.rooms.values())
+
+class VacuumAgent:
+    def __init__(self, environment):
+        self.environment = environment
+        self.steps = 0
+
+    def run(self):
+        print("Initial Room Status:", self.environment.rooms)
+        while not self.environment.is_all_clean():
+            location = self.environment.vacuum_location
+            print(f"\nVacuum is in room {location}")
+            if self.environment.status() == 'Dirty':
+                print(f"Room {location} is Dirty. Cleaning...")
+                self.environment.clean()
+            else:
+                print(f"Room {location} is already Clean.")
+                print("Moving to the other room...")
+                self.environment.move()
+            self.steps += 1
+        print("\nAll rooms are clean!")
+        print("Final Room Status:", self.environment.rooms)
+        print("Total steps taken:", self.steps)
+
+# Run the program
+env = Environment()
+agent = VacuumAgent(env)
+agent.run()
